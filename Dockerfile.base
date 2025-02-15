@@ -1,0 +1,10 @@
+# Base Image: Debian with XeLaTeX installed
+FROM debian:latest AS latex-base
+
+RUN apt-get update && apt-get install -y \
+    xzdec \
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-extra \
+    && apt-get clean

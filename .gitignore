@@ -1,0 +1,24 @@
+# Binaries & build artifacts
+/app
+*.exe
+*.out
+*.o
+*.a
+*.so
+*.dll
+
+# Dependency files
+/vendor/
+go.sum
+go.mod~
+
+# Compiled Go test binary
+*.test
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
