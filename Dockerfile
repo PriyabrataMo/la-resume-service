@@ -14,7 +14,7 @@ COPY . .
 RUN go build -o app
 
 # Stage 2: Use prebuilt LaTeX image and add compiled binary
-FROM my-latex-base AS runtime
+FROM prybruhta/my-latex-base AS runtime
 
 WORKDIR /app
 
