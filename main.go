@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -46,7 +45,6 @@ func compileLatex(c *gin.Context) {
 
 	// Compile LaTeX to PDF using XeLaTeX
 	cmd := exec.Command("pdflatex", "-interaction=nonstopmode", "-output-directory="+os.TempDir(), latexFilePath)
-	//cmd := exec.Command("xelatex", "-interaction=nonstopmode", "-output-directory="+os.TempDir(), latexFilePath)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -61,18 +59,20 @@ func compileLatex(c *gin.Context) {
 		return
 	}
 
-	// Open the generated PDF file
-	pdfFile, err := os.Open(pdfFilePath)
+	// Read the generated PDF file
+	pdfData, err := os.ReadFile(pdfFilePath)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open PDF file"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read PDF file"})
 		return
 	}
-	defer pdfFile.Close()
 
-	// Send PDF as response
+	// Set headers for proper file download in Postman
 	c.Header("Content-Disposition", "attachment; filename=document.pdf")
 	c.Header("Content-Type", "application/pdf")
-	io.Copy(c.Writer, pdfFile)
+	c.Header("Content-Length", fmt.Sprintf("%d", len(pdfData)))
+
+	// Write PDF file to response
+	c.Writer.Write(pdfData)
 
 	// Cleanup temporary files
 	_ = os.Remove(latexFilePath)
