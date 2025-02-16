@@ -3,12 +3,13 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Set Gin to release mode at startup
@@ -19,6 +20,9 @@ func init() {
 func main() {
 	r := gin.Default()
 	r.POST("/compile-latex", compileLatex)
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"message": "pong"})
+	})
 	r.Run(":8080") // Start the server on port 8080
 }
 

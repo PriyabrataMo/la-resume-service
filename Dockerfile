@@ -1,3 +1,15 @@
+# Base Image: Debian with XeLaTeX installed
+FROM debian:latest AS latex-base
+
+# Install necessary packages for LaTeX compilation
+RUN apt-get update && apt-get install -y \
+    xzdec \
+    texlive-xetex \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-extra \
+    && apt-get clean
+
 # Stage 1: Build Go Application
 FROM golang:1.24 AS builder
 
@@ -16,12 +28,12 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 # Ensure the binary is executable
 RUN chmod +x app
 
-# Stage 2: Use prebuilt LaTeX image and add compiled binary
-FROM prybruhta/my-latex-base AS runtime
+# Stage 2: Final Runtime Image with LaTeX and Go App
+FROM latex-base AS runtime
 
 WORKDIR /app
 
-# Copy the compiled Go binary from the builder
+# Copy the compiled Go binary from the builder stage
 COPY --from=builder /app/app /app/app
 
 # Expose the port
