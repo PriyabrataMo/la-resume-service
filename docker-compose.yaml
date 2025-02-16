@@ -1,9 +1,8 @@
 version: '3.8'
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  resume-builder:
+    image: 676206945293.dkr.ecr.ap-southeast-2.amazonaws.com/laresume:latest
     ports:
       - "8080:8080"
+    restart: unless-stopped

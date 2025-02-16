@@ -45,7 +45,8 @@ func compileLatex(c *gin.Context) {
 	}
 
 	// Compile LaTeX to PDF using XeLaTeX
-	cmd := exec.Command("xelatex", "-interaction=nonstopmode", "-output-directory="+os.TempDir(), latexFilePath)
+	cmd := exec.Command("pdflatex", "-interaction=nonstopmode", "-output-directory="+os.TempDir(), latexFilePath)
+	//cmd := exec.Command("xelatex", "-interaction=nonstopmode", "-output-directory="+os.TempDir(), latexFilePath)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out

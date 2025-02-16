@@ -1,14 +1,16 @@
-# Base Image: Debian with XeLaTeX installed
+# Base Image: Debian with full LaTeX support (pdflatex, xelatex, lualatex)
 FROM debian:latest AS latex-base
 
-# Install necessary packages for LaTeX compilation
-RUN apt-get update && apt-get install -y \
-    xzdec \
-    texlive-xetex \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    texlive-latex-base \
+    texlive-latex-recommended \
     texlive-fonts-recommended \
     texlive-fonts-extra \
     texlive-latex-extra \
-    && apt-get clean
+    texlive-xetex \
+    texlive-luatex \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Stage 1: Build Go Application
 FROM golang:1.24 AS builder
