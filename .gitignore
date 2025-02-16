@@ -21,3 +21,5 @@ go.mod~
 *.swo
 *.sublime-project
 *.sublime-workspace
+la-resume.pem
+*.pem
