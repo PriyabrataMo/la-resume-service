@@ -1,0 +1,44 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24
+
+      - name: Install Dependencies
+        run: go mod tidy && go mod download
+
+      - name: Build Go App
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
+
+      - name: Check LaTeX Installation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex
+          which xelatex || echo "❌ XeLaTeX is NOT installed"
+
+      - name: Test LaTeX Compilation
+        run: |
+          echo "\\documentclass{article}\n\\begin{document}\nHello, World!\n\\end{document}" > test.tex
+          xelatex -interaction=nonstopmode test.tex || echo "❌ LaTeX Compilation Failed"
+
+      - name: Run Go Server (Check if it starts)
+        run: |
+          chmod +x app
+          ./app &
+          sleep 5
+          curl -X POST http://localhost:8080/compile-latex || echo "❌ API is not working"
