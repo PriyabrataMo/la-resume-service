@@ -10,8 +10,8 @@ RUN go mod tidy && go mod download
 # Copy the project source code
 COPY . .
 
-# Build the Go application with Linux architecture
-RUN GOOS=linux GOARCH=amd64 go build -o app
+# Build the Go application with Linux architecture (Static binary)
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
 # Ensure the binary is executable
 RUN chmod +x app

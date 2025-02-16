@@ -11,6 +11,11 @@ import (
 	"path/filepath"
 )
 
+// Set Gin to release mode at startup
+func init() {
+	gin.SetMode(gin.ReleaseMode)
+}
+
 func main() {
 	r := gin.Default()
 	r.POST("/compile-latex", compileLatex)
@@ -65,9 +70,6 @@ func compileLatex(c *gin.Context) {
 	io.Copy(c.Writer, pdfFile)
 
 	// Cleanup temporary files
-	err = os.Remove(latexFilePath)
-	if err != nil {
-		return
-	}
-	os.Remove(pdfFilePath)
+	_ = os.Remove(latexFilePath)
+	_ = os.Remove(pdfFilePath)
 }
